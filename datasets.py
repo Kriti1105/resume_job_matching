@@ -4,7 +4,10 @@ import kagglehub
 import pandas as pd
 import os
 import nltk
+import sklearn
 from nltk.corpus import stopwords
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
  
 nltk.download("stopwords")
 
@@ -75,3 +78,25 @@ print(len(jobs))
 
 profiles.to_csv("clean_resumes.csv", index=False)
 jobs.to_csv("clean_job_postings.csv", index=False)
+
+
+# Recommends jobs by calculating the dot product of TF-IDF vectors
+tfidf = TfidfVectorizer(max_features=10000)
+
+all_text = pd.concat([profiles['resume_text'], jobs['description']])
+tfidf.fit(all_text)
+
+resume_vectors = tfidf.transform(profiles['resume_text'])
+job_vectors = tfidf.transform(jobs['description'])
+
+def get_recommendations(resume_idx, top_n=5):
+    q = resume_vectors[resume_idx].toarray()
+    d = job_vectors.toarray()
+    
+    scores = (q @ d.T).flatten()
+    sorted_indices = reversed(scores.argsort()[-5:])
+    
+    for i in sorted_indices: 
+        print(f"Score: {scores[i]:.4f} | {jobs.iloc[i]['title']}")
+
+get_recommendations(0,5)
