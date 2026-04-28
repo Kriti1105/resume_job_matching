@@ -1,4 +1,4 @@
-
+*.pkl
 *.csv
 *.npy
 __pycache__/
