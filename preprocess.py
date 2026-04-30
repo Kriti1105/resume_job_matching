@@ -91,3 +91,4 @@ jobs.to_csv("clean_job_postings.csv", index=False)
 # Save to handle memory issues
 joblib.dump(tfidf, "tfidf_model.pkl")
 joblib.dump(job_vectors, "job_vectors.pkl")
+print("Preprocessing finished!")

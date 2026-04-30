@@ -40,10 +40,18 @@ def get_recommendations(resume_idx, top_n=5):
 
     final_indices = sorted(scored_candidates, key=lambda x: x['score'], reverse=True)[:top_n]
     
-    for i in final_indices: 
+    results = []
+    for i in final_indices:
         job_idx = i['idx']
         job_score = i['score']
-    
         print(f"Score: {job_score:.4f} | {jobs.iloc[job_idx]['title']}")
+        results.append({
+            "job_id":       str(jobs.iloc[job_idx]['job_id']),
+            "title":        jobs.iloc[job_idx]['title'],
+            "company_name": jobs.iloc[job_idx]['company_name'],
+            "description":  jobs.iloc[job_idx]['description'],
+            "score":        job_score,
+        })
+    return results
 
 get_recommendations(0,5)
